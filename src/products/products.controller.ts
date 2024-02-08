@@ -8,6 +8,7 @@ export class ProductsController {
 
   @Get()
   async getAllProducts(@Query() query): Promise<Product[]> {
+    console.log('a');
     return this.productService.findAll(query);
   }
 
