@@ -37,8 +37,6 @@ export class ProductsService {
       delete findQuery.priceOrder;
     }
 
-    console.log(sortQuery);
-
     if ('rateOrder' in findQuery) {
       sortQuery['rating.rate'] = order[findQuery.rateOrder];
       delete findQuery.rateOrder;
@@ -76,7 +74,7 @@ export class ProductsService {
   async findByProductId(productId: number): Promise<Product> {
     const product = await this.productModel.findOne({ productId: productId });
 
-    if (!product) throw new NotFoundException('Book not found');
+    if (!product) throw new NotFoundException('Product not found');
 
     return product;
   }
