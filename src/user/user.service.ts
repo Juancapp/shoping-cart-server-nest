@@ -48,6 +48,39 @@ export class UserService {
       });
   }
 
+  async addItems(
+    userId: string,
+    productId: string,
+    quantity: number,
+  ): Promise<User> {
+    if (quantity === 1) return this.addOneItem(userId, productId);
+
+    return this.userModel
+      .findOne({ _id: userId, 'products.product': productId })
+      .exec()
+      .then((user) => {
+        if (user) {
+          return this.userModel
+            .findOneAndUpdate(
+              { _id: userId, 'products.product': productId },
+              { $inc: { 'products.$.quantity': quantity } },
+              { new: true },
+            )
+            .exec();
+        } else {
+          return this.userModel
+            .findOneAndUpdate(
+              { _id: userId },
+              {
+                $push: { products: { product: productId, quantity: quantity } },
+              },
+              { new: true },
+            )
+            .exec();
+        }
+      });
+  }
+
   async removeOneItem(userId: string, productId: string): Promise<User> {
     return this.userModel
       .findOneAndUpdate(

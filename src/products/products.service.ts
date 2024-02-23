@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { Product } from './product.schema';
+import { ProductData } from './product.entity';
 
 @Injectable()
 export class ProductsService {
@@ -10,13 +11,13 @@ export class ProductsService {
     private productModel: mongoose.Model<Product>,
   ) {}
 
-  async findAll(query = {} as Record<string, never>): Promise<Product[]> {
+  async findAll(query = {} as Record<string, never>): Promise<ProductData> {
     const order = {
       ['desc']: -1,
       ['asc']: 1,
     };
 
-    const resPerPage = 10;
+    const resPerPage = 8;
     const currentPage = 'page' in query ? Number(query.page) : 1;
     const skip = resPerPage * (currentPage - 1);
 
@@ -32,14 +33,10 @@ export class ProductsService {
           }
         : { ...query };
 
-    if ('priceOrder' in findQuery) {
-      sortQuery['price'] = order[findQuery.priceOrder];
-      delete findQuery.priceOrder;
-    }
-
-    if ('rateOrder' in findQuery) {
-      sortQuery['rating.rate'] = order[findQuery.rateOrder];
-      delete findQuery.rateOrder;
+    if ('orderBy' in findQuery) {
+      sortQuery[findQuery.orderBy] = order[findQuery.order];
+      delete findQuery.orderBy;
+      delete findQuery.order;
     }
 
     if ('page' in findQuery) {
@@ -54,7 +51,15 @@ export class ProductsService {
 
     if (!products.length) throw new NotFoundException('There are not products');
 
-    return products;
+    const totalProducts = await this.productModel.countDocuments(findQuery);
+
+    const data = {
+      page: currentPage,
+      products: products,
+      totalPages: Math.ceil(totalProducts / resPerPage),
+    };
+
+    return data;
   }
 
   async createProduct(product: Product): Promise<Product> {
@@ -71,8 +76,8 @@ export class ProductsService {
     return res;
   }
 
-  async findByProductId(productId: number): Promise<Product> {
-    const product = await this.productModel.findOne({ productId: productId });
+  async findById(id: string): Promise<Product> {
+    const product = await this.productModel.findById(id);
 
     if (!product) throw new NotFoundException('Product not found');
 

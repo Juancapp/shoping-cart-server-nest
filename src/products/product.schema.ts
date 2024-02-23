@@ -4,7 +4,7 @@ export enum Category {
   ELECTRONICS = 'electronics',
   MENS_CLOTHING = `men's clothing`,
   WOMENS_CLOTHING = `women's clothing`,
-  JEWERLERY = 'jewerlery',
+  JEWELERY = 'jewelery',
 }
 
 @Schema({

@@ -22,12 +22,21 @@ export class UserController {
     return this.userService.getUser(name);
   }
 
-  @Patch('add/:userId/:productId')
+  @Patch('addOne/:userId/:productId')
   async addOneItem(
     @Param('userId') userId: string,
     @Param('productId') productId: string,
   ): Promise<User> {
     return this.userService.addOneItem(userId, productId);
+  }
+
+  @Patch('add/:userId/:productId/:quantity')
+  async addItems(
+    @Param('userId') userId: string,
+    @Param('productId') productId: string,
+    @Param('quantity') quantity: string,
+  ): Promise<User> {
+    return this.userService.addItems(userId, productId, parseInt(quantity));
   }
 
   @Patch('remove/:userId/:productId')
