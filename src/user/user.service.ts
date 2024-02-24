@@ -16,9 +16,11 @@ export class UserService {
   }
 
   async getUser(name: string): Promise<User> {
-    const user = await this.userModel.findOne({
-      name: name.toLocaleLowerCase(),
-    });
+    const user = await this.userModel
+      .findOne({
+        name: name.toLocaleLowerCase(),
+      })
+      .populate({ path: 'products.product' });
 
     if (user) {
       return user;

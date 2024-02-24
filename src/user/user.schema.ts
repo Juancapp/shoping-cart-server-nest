@@ -9,7 +9,12 @@ export class User {
   name: string;
 
   @Prop({
-    type: [{ quantity: { type: Number }, product: { type: Types.ObjectId } }],
+    type: [
+      {
+        quantity: { type: Number },
+        product: { type: Types.ObjectId, ref: 'Product' },
+      },
+    ],
   })
   products: { quantity: number; product: Types.ObjectId }[];
 }
