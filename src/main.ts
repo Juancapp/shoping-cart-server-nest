@@ -6,6 +6,9 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://shopping-cart-v2-pink.vercel.app',
+      'https://shopping-cart-v2-pink.vercel.app',
+      'https://shopping-cart-v2-r794ecav9-juanitocamo3-gmailcom.vercel.app/',
+      'http://shopping-cart-v2-r794ecav9-juanitocamo3-gmailcom.vercel.app/',
       'http://localhost:3000',
     ],
     methods: 'GET, HEAD, PUT, POST, DELETE, OPTIONS, PATCH',
